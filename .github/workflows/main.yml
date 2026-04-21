@@ -1,4 +1,4 @@
-name: Deploy to doc(s).oneprocloud.com
+name: Deploy to docs
 
 on:
   push:
