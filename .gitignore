@@ -1,4 +1,6 @@
 node_modules/
 docs/.vitepress/cache/
 docs/.vitepress/dist/
-AGIOne产品文档体系.md
+.opencode/
+.github/workflows/main-test.yml
+AGIOne.md
