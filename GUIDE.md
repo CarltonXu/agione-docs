@@ -14,8 +14,8 @@
 │   │   │   ├── en.ts              # 英文主题配置（合并 navbar + sidebar）
 │   │   │   ├── zh.ts              # 中文主题配置（合并 navbar + sidebar）
 │   │   │   ├── navbar/                  # 导航栏配置
-│   │   │   │   ├── en.ts                # 英文导航栏（构建时由模板生成，勿手动修改）
-│   │   │   │   ├── zh.ts                # 中文导航栏（构建时由模板生成，勿手动修改）
+│   │   │   │   ├── en.ts                # Preview 版英文导航栏（生产环境构建时由模板生成，勿手动修改）
+│   │   │   │   ├── zh.ts                # Preview 版中文导航栏（生产环境构建时由模板生成，勿手动修改）
 │   │   │   │   ├── en.main.ts           # CN 版英文导航模板（docs.agione.cc）
 │   │   │   │   ├── zh.main.ts           # CN 版中文导航模板（docs.agione.cc）
 │   │   │   │   ├── en.global.main.ts    # Global 版英文导航模板（docs.agione.pro）
@@ -390,6 +390,40 @@ CN 版和 Global 版唯一的区别是导航栏中 **AGIOne** 的链接地址：
 | Global (`deploy-global`) | `https://agione.pro/` |
 
 如需添加新的外部链接且两套版本不同，需要分别在 `*.main.ts` 和 `*.global.main.ts` 模板中修改。
+
+### Preview 环境部署
+
+项目另有一个 Preview 环境用于测试预览，配置文件位于 `.github/workflows/preview.yml`。
+
+与 main 分支的 CI/CD 不同，Preview 环境有以下特点：
+
+| 特性 | main 分支 | preview 分支 |
+|------|-----------|-------------|
+| 配置文件 | `main.yml` | `preview.yml` |
+| 触发分支 | `main` | `preview` |
+| 构建 job | 2 个并行（CN + Global） | 1 个（Preview） |
+| 导航栏 | 由模板生成 | 直接使用 `en.ts` / `zh.ts` |
+| 部署路径 | `vars.DEPLOY_PATH` / `vars.GLOBAL_DEPLOY_PATH` | `vars.PREVIEW_DEPLOY_PATH` |
+
+Preview 环境**不使用导航栏模板**，构建时直接使用仓库中现有的 `en.ts` / `zh.ts` 文件。这适用于：
+- 在正式发布前预览文档内容
+- 测试导航栏配置的实际效果
+
+如需部署到 Preview 环境：
+1. 将代码推送到 `preview` 分支，或
+2. 在 GitHub Actions 页面手动触发 `Deploy to docs-preview` workflow
+
+### 环境变量
+
+Preview 环境需要额外配置以下变量：
+
+| 变量 | 用途 |
+|------|------|
+| `vars.PREVIEW_DEPLOY_PATH` | Preview 版部署目录 |
+| `vars.DEPLOY_HOST` | 目标服务器地址（三套共用） |
+| `vars.DEPLOY_PORT` | SSH 端口（三套共用） |
+| `vars.DEPLOY_USER` | SSH 用户名（三套共用） |
+| `secrets.DEPLOY_KEY` | SSH 私钥（三套共用） |
 
 ## 常用命令
 
